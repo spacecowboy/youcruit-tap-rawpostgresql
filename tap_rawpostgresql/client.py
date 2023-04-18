@@ -9,6 +9,7 @@ import logging
 from os import PathLike
 from typing import IO, Any, Iterable, Optional, Union
 from uuid import UUID, uuid4
+from decimal import Decimal
 
 import singer_sdk._singerlib as singer
 import sqlalchemy  # type: ignore
@@ -157,6 +158,8 @@ def conform_record_data_types_and_uuid(  # noqa: C901
     for property_name, elem in record.items():
         if isinstance(elem, UUID):
             rec[property_name] = str(elem)
+        elif isinstance(elem, Decimal):
+            rec[property_name] = float(elem)
 
     return rec
 

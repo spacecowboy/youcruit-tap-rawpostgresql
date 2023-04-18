@@ -153,7 +153,8 @@ CONFIG_BATCH = dict(
             "sql": """
                 select
                   '1441c21d-9921-4a1d-b239-9c6ea18af234'::uuid as id,
-                  timestamptz '2021-11-22T11:45:11.062824+00:00' as last_updated
+                  timestamptz '2021-11-22T11:45:11.062824+00:00' as last_updated,
+                  '2.51'::numeric as decimal_number
             """,
             "key_properties": ["id"],
             "columns": [
@@ -164,6 +165,10 @@ CONFIG_BATCH = dict(
                 {
                     "name": "last_updated",
                     "type": "datetime",
+                },
+                {
+                    "name": "decimal_number",
+                    "type": "numeric",
                 },
             ],
         }
@@ -200,4 +205,5 @@ def test_batch():
         assert result == {
             "id": "1441c21d-9921-4a1d-b239-9c6ea18af234",
             "last_updated": "2021-11-22T11:45:11.062824+00:00",
+            "decimal_number": 2.51
         }
