@@ -6,10 +6,10 @@ This includes PostgreSQLStream and PostgreSQLConnector.
 import gzip
 import json
 import logging
+from decimal import Decimal
 from os import PathLike
 from typing import IO, Any, Iterable, Optional, Union
 from uuid import UUID, uuid4
-from decimal import Decimal
 
 import singer_sdk._singerlib as singer
 import sqlalchemy  # type: ignore
