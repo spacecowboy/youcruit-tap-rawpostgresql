@@ -225,12 +225,17 @@ class RawPostgreSQLStream(Stream):
                     logger=self.logger,
                 )
 
+                if gz is None:
+                    raise ValueError("'gz' was None but shouldn't have been")
                 gz.write((json.dumps(record) + "\n").encode())
                 chunk_size += 1
 
                 if chunk_size >= self.batch_size:
                     gz.close()
                     gz = None
+
+                    if f is None:
+                        raise ValueError("'f' was None but shouldn't have been")
                     f.close()
                     f = None
                     file_url = fs.geturl(filename)
@@ -242,6 +247,12 @@ class RawPostgreSQLStream(Stream):
                     chunk_size = 0
 
             if chunk_size > 0:
+                if gz is None:
+                    raise ValueError("'gz' was None but shouldn't have been")
+                if f is None:
+                    raise ValueError("'f' was None but shouldn't have been")
+                if filename is None:
+                    raise ValueError("'filename' was None but shouldn't have been")
                 gz.close()
                 f.close()
                 file_url = fs.geturl(filename)
