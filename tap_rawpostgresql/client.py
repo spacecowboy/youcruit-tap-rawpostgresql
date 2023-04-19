@@ -213,7 +213,7 @@ class RawPostgreSQLStream(Stream):
 
         with batch_config.storage.fs() as fs:
             for record in self._sync_records(context, write_messages=False):
-                if filename is None:
+                if filename is None or f is None or gz is None:
                     filename = f"{prefix}{sync_id}-{i}.json.gz"
                     f = fs.open(filename, "wb")
                     gz = gzip.GzipFile(fileobj=f, mode="wb")
@@ -225,17 +225,12 @@ class RawPostgreSQLStream(Stream):
                     logger=self.logger,
                 )
 
-                if gz is None:
-                    raise ValueError("'gz' was None but shouldn't have been")
                 gz.write((json.dumps(record) + "\n").encode())
                 chunk_size += 1
 
                 if chunk_size >= self.batch_size:
                     gz.close()
                     gz = None
-
-                    if f is None:
-                        raise ValueError("'f' was None but shouldn't have been")
                     f.close()
                     f = None
                     file_url = fs.geturl(filename)
