@@ -1,10 +1,5 @@
 """Tests some actual SQL"""
 
-import gzip
-import json
-import os
-from urllib.parse import urlparse
-
 from sqlalchemy import create_engine
 
 from tap_rawpostgresql.tap import TapRawPostgreSQL

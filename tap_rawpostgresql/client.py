@@ -6,6 +6,7 @@ This includes PostgreSQLStream and PostgreSQLConnector.
 import gzip
 import json
 import logging
+from decimal import Decimal
 from os import PathLike
 from typing import IO, Any, Iterable, Optional, Union
 from uuid import UUID, uuid4
@@ -157,6 +158,8 @@ def conform_record_data_types_and_uuid(  # noqa: C901
     for property_name, elem in record.items():
         if isinstance(elem, UUID):
             rec[property_name] = str(elem)
+        elif isinstance(elem, Decimal):
+            rec[property_name] = float(elem)
 
     return rec
 
@@ -210,7 +213,7 @@ class RawPostgreSQLStream(Stream):
 
         with batch_config.storage.fs() as fs:
             for record in self._sync_records(context, write_messages=False):
-                if filename is None:
+                if filename is None or f is None or gz is None:
                     filename = f"{prefix}{sync_id}-{i}.json.gz"
                     f = fs.open(filename, "wb")
                     gz = gzip.GzipFile(fileobj=f, mode="wb")
@@ -239,6 +242,12 @@ class RawPostgreSQLStream(Stream):
                     chunk_size = 0
 
             if chunk_size > 0:
+                if gz is None:
+                    raise ValueError("'gz' was None but shouldn't have been")
+                if f is None:
+                    raise ValueError("'f' was None but shouldn't have been")
+                if filename is None:
+                    raise ValueError("'filename' was None but shouldn't have been")
                 gz.close()
                 f.close()
                 file_url = fs.geturl(filename)

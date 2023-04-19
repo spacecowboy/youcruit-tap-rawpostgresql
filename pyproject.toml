@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "tap-rawpostgresql"
-version = "0.0.1"
+version = "0.0.2"
 description = "`tap-rawpostgresql` is a Singer tap for PostgreSQL, built with the Meltano Singer SDK."
 authors = ["FirstName LastName"]
 keywords = [
@@ -24,6 +24,9 @@ mypy = "^0.931"
 types-requests = "^2.27.11"
 coverage = "^6.2"
 isort = "^5.10.1"
+
+[tool.poetry.group.dev.dependencies]
+viztracer = "^0.15.6"
 
 [tool.isort]
 profile = "black"
